@@ -16,7 +16,7 @@ I imported the `.h5` in STM32CubeMX with X-CUBE-AI 10.2.0, using the Application
 
 ![Model graph in CubeMX](results/model_graph.png)
 
-The analysis says the network needs about 24k multiply-accumulates per inference. In memory, the weights take 8.1 KB of flash (68.7 % less than the float model, thanks to the compression), and the activations 3.9 KB of RAM. Once the AI runtime is counted, the whole thing comes to about 22 KB of flash and 6 KB of RAM, a tiny part of what the board offers. The complete report is in `results/mnist_analyze_report.txt`.
+The analysis says the network needs about 24k multiply-accumulates per inference. In memory, the weights take 8.1 KB of flash (68.7 % less than the float model, thanks to the compression). The complete report is in `results/mnist_analyze_report.txt`.
 
 ## Firmware
 
@@ -44,7 +44,6 @@ Two things are worth knowing when reading the log. First, most "confident" outpu
 ## Repository content
 
 ```
-docs/EmbeddedAI_slides.pdf          course slides (Olivier Potin, MINES Saint-Étienne)
 notebooks/Embedded_AI_colab.ipynb     Colab notebook used for training (with outputs)
 model/                              .h5 model and .npy test data
 firmware/                           main.c and app_x-cube-ai.c
