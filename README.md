@@ -6,7 +6,7 @@ The PC sends a 28×28 image over UART, the board runs the inference, and it send
 
 ## Training the model
 
-I trained the network in Google Colab with Keras (`notebooks/Embedded_AI_colab.pdf`). It is deliberately tiny so it fits comfortably in a Cortex-M4: one 3×3 convolution with 2 filters, a 2×2 max pooling, a dense layer of 16 neurons and a softmax over 10 classes. That adds up to 6,478 parameters.
+I trained the network in Google Colab with Keras (`notebooks/Embedded_AI_colab.ipynb`). It is deliberately tiny so it fits comfortably in a Cortex-M4: one 3×3 convolution with 2 filters, a 2×2 max pooling, a dense layer of 16 neurons and a softmax over 10 classes. That adds up to 6,478 parameters.
 
 I used Adam, batch size 128 and only 5 epochs. On the 10,000 MNIST test images it reaches 95.77 % accuracy, which is fine for a network this small. The notebook also saves the `.h5` model and the test set as `.npy` files, which CubeMX needs later for validation.
 
@@ -16,7 +16,7 @@ I imported the `.h5` in STM32CubeMX with X-CUBE-AI 10.2.0, using the Application
 
 ![Model graph in CubeMX](results/model_graph.png)
 
-The analysis says the network needs about 24k multiply-accumulates per inference. In memory, the weights take 8.1 KB of flash (68.7 % less than the float model, thanks to the compression), and the activations 3.9 KB of RAM. Once the AI runtime is counted, the whole thing comes to about 22 KB of flash and 6 KB of RAM, a tiny part of what the board offers.
+The analysis says the network needs about 24k multiply-accumulates per inference. In memory, the weights take 8.1 KB of flash (68.7 % less than the float model, thanks to the compression), and the activations 3.9 KB of RAM. Once the AI runtime is counted, the whole thing comes to about 22 KB of flash and 6 KB of RAM, a tiny part of what the board offers. The complete report is in `results/mnist_analyze_report.txt`.
 
 ## Firmware
 
@@ -37,16 +37,19 @@ python host/test.py
 
 On the board, 99 of the 100 images were classified correctly. The only miss is iteration 19, a 3 that the network read as an 8 (with a score of about 0.80 for the 8). The full log is in `results/stm32_evaluation_log.txt`.
 
+![Board results on 100 test images](results/board_results.png)
+
 Two things are worth knowing when reading the log. First, most "confident" outputs show 0.996 instead of 1.0. That is just the `uint8` cast on the MCU truncating a value like 0.9999 to 254/255, and it doesn't change the predicted class. Second, 99 % on 100 samples is a small sample and ends up above the 95.77 % measured on the whole test set, so the second number is the one that really represents the model.
 
 ## Repository content
 
 ```
-notebooks/Embedded_AI_colab.pdf     Colab notebook used for training
+docs/EmbeddedAI_slides.pdf          course slides (Olivier Potin, MINES Saint-Étienne)
+notebooks/Embedded_AI_colab.ipynb     Colab notebook used for training (with outputs)
 model/                              .h5 model and .npy test data
 firmware/                           main.c and app_x-cube-ai.c
 host/test.py                        UART evaluation script
-results/                            model graph, X-CUBE-AI analysis, board log
+results/                            model graph, X-CUBE-AI analysis report, board log and plot
 ```
 
 The notebook, the UART script and the application template were given in the course, and I adapted them for this assignment.
