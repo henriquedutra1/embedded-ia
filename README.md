@@ -42,7 +42,6 @@ Two things are worth knowing when reading the log. First, most "confident" outpu
 ## Repository content
 
 ```
-docs/EmbeddedAI_slides.pdf          course slides (Olivier Potin, MINES Saint-Étienne)
 notebooks/Embedded_AI_colab.pdf     Colab notebook used for training
 model/                              .h5 model and .npy test data
 firmware/                           main.c and app_x-cube-ai.c
