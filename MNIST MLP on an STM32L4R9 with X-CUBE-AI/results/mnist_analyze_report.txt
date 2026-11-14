@@ -1,0 +1,128 @@
+
+
+Analyzing model 
+C:/Users/henri/STM32Cube/Repository/Packs/STMicroelectronics/X-CUBE-AI/10.2.0/Utilities/windows/stedgeai.exe analyze --target stm32l4 --name mnist -m C:/Users/henri/OneDrive/Documents/iaembarque/5dense-mnist-10class-finetuned.h5 --compression low --verbosity 1 --workspace C:/Users/henri/AppData/Local/Temp/mxAI_workspace13829903394669917246465176066630841 --output C:/Users/henri/.stm32cubemx/mnist_output 
+ST Edge AI Core v2.2.0-20266 2adc00962 
+Creating c (debug) info json file C:\Users\henri\.stm32cubemx\mnist_output\mnist_c_info.json 
+  
+ Exec/report summary (analyze) 
+ ------------------------------------------------------------------------------------------------------------- 
+ model file         :   C:\Users\henri\OneDrive\Documents\iaembarque\5dense-mnist-10class-finetuned.h5         
+ type               :   keras                                                                                  
+ c_name             :   mnist                                                                                  
+ compression        :   low                                                                                    
+ options            :   allocate-inputs, allocate-outputs                                                      
+ optimization       :   balanced                                                                               
+ target/series      :   stm32l4                                                                                
+ workspace dir      :   C:\Users\henri\AppData\Local\Temp\mxAI_workspace13829903394669917246465176066630841    
+ output dir         :   C:\Users\henri\.stm32cubemx\mnist_output                                               
+ model_fmt          :   float                                                                                  
+ model_name         :   node_5densemnist10classfinetuned                                                       
+ model_hash         :   0x6419c3277e46c546925f3ff763387bc6                                                     
+ params #           :   575,050 items (2.19 MiB)                                                               
+ ------------------------------------------------------------------------------------------------------------- 
+ input 1/1          :   'input_0', f32(1x784), 3.06 KBytes, activations                                        
+ output 1/1         :   'dense_4', f32(1x10), 40 Bytes, activations                                            
+ macc               :   576,160                                                                                
+ weights (ro)       :   607,528 B (593.29 KiB) (1 segment) / -1,692,672(-73.6%) vs float model                 
+ activations (rw)   :   5,184 B (5.06 KiB) (1 segment) *                                                       
+ ram (total)        :   5,184 B (5.06 KiB) = 5,184 + 0 + 0                                                     
+ ------------------------------------------------------------------------------------------------------------- 
+ (*) 'input'/'output' buffers are allocated in the activations buffer 
+Computing AI RT data/code size (target=stm32l4).. 
+ Model name - node_5densemnist10classfinetuned 
+ ------ ----------------------- ------------- ------------------- --------- --------------- 
+ m_id   layer (original)        oshape        param/size               macc    connected to 
+ ------ ----------------------- ------------- ------------------- --------- --------------- 
+ 0      input_0 (None)          [b:1,c:784] 
+        dense_dense (Dense)     [b:1,c:512]   401,920/1,607,680     401,920         input_0 
+        dense (Dense)           [b:1,c:512]                             512     dense_dense 
+ ------ ----------------------- ------------- ------------------- --------- --------------- 
+ 1      dense_1_dense (Dense)   [b:1,c:256]   131,328/525,312       131,328           dense 
+        dense_1 (Dense)         [b:1,c:256]                             256   dense_1_dense 
+ ------ ----------------------- ------------- ------------------- --------- --------------- 
+ 2      dense_2_dense (Dense)   [b:1,c:128]   32,896/131,584         32,896         dense_1 
+        dense_2 (Dense)         [b:1,c:128]                             128   dense_2_dense 
+ ------ ----------------------- ------------- ------------------- --------- --------------- 
+ 3      dense_3_dense (Dense)   [b:1,c:64]    8,256/33,024            8,256         dense_2 
+        dense_3 (Dense)         [b:1,c:64]                               64   dense_3_dense 
+ ------ ----------------------- ------------- ------------------- --------- --------------- 
+ 4      dense_4_dense (Dense)   [b:1,c:10]    650/2,600                 650         dense_3 
+        dense_4 (Dense)         [b:1,c:10]                              150   dense_4_dense 
+ ------ ----------------------- ------------- ------------------- --------- --------------- 
+ model: macc=576,160 weights=2,300,200 activations=-- io=-- 
+ Number of operations per c-layer 
+ ------- ------ ------------------------ --------- -------------- 
+ c_id    m_id   name (type)                    #op           type 
+ ------- ------ ------------------------ --------- -------------- 
+ 0       0      dense_dense (Dense)        401,920    smul_f32_f8 
+ 1       0      dense (Nonlinearity)           512     op_f32_f32 
+ 2       1      dense_1_dense (Dense)      131,328    smul_f32_f8 
+ 3       1      dense_1 (Nonlinearity)         256     op_f32_f32 
+ 4       2      dense_2_dense (Dense)       32,896    smul_f32_f8 
+ 5       2      dense_2 (Nonlinearity)         128     op_f32_f32 
+ 6       3      dense_3_dense (Dense)        8,256   smul_f32_f32 
+ 7       3      dense_3 (Nonlinearity)          64     op_f32_f32 
+ 8       4      dense_4_dense (Dense)          650   smul_f32_f32 
+ 9       4      dense_4 (Nonlinearity)         150     op_f32_f32 
+ ------- ------ ------------------------ --------- -------------- 
+ total                                     576,160 
+ Number of operation types 
+ ---------------- --------- ----------- 
+ operation type           #           % 
+ ---------------- --------- ----------- 
+ smul_f32_f8        566,144       98.3% 
+ op_f32_f32           1,110        0.2% 
+ smul_f32_f32         8,906        1.5% 
+ Complexity report (model) 
+ ------ --------------- ------------------------- ------------------------- -------- 
+ m_id   name            c_macc                    c_rom                     c_id 
+ ------ --------------- ------------------------- ------------------------- -------- 
+ 0      input_0         ||||||||||||||||  69.8%   ||||||||||||||||  66.6%   [0, 1] 
+ 1      dense_1_dense   |||||             22.8%   |||||             21.9%   [2, 3] 
+ 2      dense_2_dense   ||                 5.7%   ||                 5.6%   [4, 5] 
+ 3      dense_3_dense   |                  1.4%   ||                 5.4%   [6, 7] 
+ 4      dense_4_dense   |                  0.1%   |                  0.4%   [8, 9] 
+ ------ --------------- ------------------------- ------------------------- -------- 
+ macc=576,160 weights=607,528 act=5,184 ram_io=0 
+ Requested memory size by section - "stm32l4" target 
+ ------------------------------ ------- --------- ------- ------- 
+ module                            text    rodata    data     bss 
+ ------------------------------ ------- --------- ------- ------- 
+ NetworkRuntime1020_CM4_GCC.a     6,924         0       0       0 
+ mnist.o                            712        80   2,720     172 
+ mnist_data.o                        48        16      88       0 
+ lib (toolchain)*                   614        24       0       0 
+ ------------------------------ ------- --------- ------- ------- 
+ RT total**                       8,298       120   2,808     172 
+ ------------------------------ ------- --------- ------- ------- 
+ weights                              0   607,528       0       0 
+ activations                          0         0       0   5,184 
+ io                                   0         0       0       0 
+ ------------------------------ ------- --------- ------- ------- 
+ TOTAL                            8,298   607,648   2,808   5,356 
+ ------------------------------ ------- --------- ------- ------- 
+ *  toolchain objects (libm/libgcc*) 
+ ** RT AI runtime objects (kernels+infrastructure) 
+  Summary - "stm32l4" target 
+  -------------------------------------------------- 
+               FLASH (ro)     %*   RAM (rw)       % 
+  -------------------------------------------------- 
+  RT total         11,226   1.8%      2,980   36.5% 
+  -------------------------------------------------- 
+  TOTAL           618,754             8,164 
+  -------------------------------------------------- 
+  *  rt/total 
+Creating txt report file C:\Users\henri\.stm32cubemx\mnist_output\mnist_analyze_report.txt 
+elapsed time (analyze): 225.590s 
+Model file:      5dense-mnist-10class-finetuned.h5 
+Total Flash:     618754 B (604.25 KiB) 
+    Weights:     607528 B (593.29 KiB) 
+    Library:     11226 B (10.96 KiB) 
+Total Ram:       8164 B (7.97 KiB) 
+    Activations: 5184 B (5.06 KiB) 
+    Library:     2980 B (2.91 KiB) 
+    Input:       3136 B (3.06 KiB included in Activations) 
+    Output:      40 B (included in Activations) 
+Done 
+Analyze complete on AI model
