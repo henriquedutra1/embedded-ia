@@ -1,0 +1,12 @@
+=== AIfES MNIST Q7 on Zynq ===
+AIfES needs an inference memory of:1588
+You can use this size and create an array to avoid using malloc.
+img 0  label=7  pred=7  keras=7  | 0.000 0.000 0.000 0.000 0.000 0.000 0.000 0.996 0.000 0.000 
+img 1  label=8  pred=8  keras=8  | 0.000 0.000 0.000 0.000 0.000 0.000 0.000 0.000 0.996 0.000 
+img 2  label=1  pred=1  keras=1  | 0.000 0.996 0.000 0.000 0.000 0.000 0.000 0.000 0.000 0.000 
+img 3  label=6  pred=6  keras=6  | 0.000 0.000 0.000 0.000 0.000 0.000 0.996 0.000 0.000 0.000 
+img 4  label=1  pred=1  keras=1  | 0.000 0.996 0.000 0.000 0.000 0.000 0.000 0.000 0.000 0.000 
+
+Accuracy (vs labels)     : 99 / 100
+Agreement with Keras     : 100 / 100
+Mean time per inference  : 1259.2 us
