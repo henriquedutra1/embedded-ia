@@ -80,17 +80,15 @@ The multiplier is in `ip/fmul32.v`. It multiplies the two mantissas (with the hi
 The testbench `ip/tb_fmul32.v` checks a few products. All of them give the expected value, except 0.1 × 0.2 which is 1 bit lower than the ARM result (`3CA3D70A` instead of `3CA3D70B`) because of the truncation.
 
 <p align="center">
-  <img src="ip/simulation.png" alt="Simulation of fmul32" width="700">
+  <img src="vivado/simulation.png" alt="Simulation of fmul32" width="700">
 </p>
-
-One problem I had: after changing the IP, the block design kept using the first revision of `mul_ip` (without `fmul32`), so synthesis failed with `module 'fmul32' not found`. The IP has to be upgraded in the main project (Report IP Status > Upgrade) every time it is packaged again.
 
 ### Hardware
 
 In the block design I enabled M_AXI_GP0 again and added `mul_ip`. The connection automation added an AXI SmartConnect and a Processor System Reset, and the IP got the address 0x43C0_0000. Everything runs on FCLK_CLK0 at 100 MHz. Timing is met with a worst negative slack of +3.03 ns, so the longest path takes about 7 ns.
 
 <p align="center">
-  <img src="vivado/block_design_ip.png" alt="Block design with mul_ip" width="700">
+  <img src="vivado/final_design.png" alt="Block design with mul_ip" width="700">
 </p>
 
 When running from Vitis, the launch used `mul_ip.tcl` (a file of the IP driver included in the `.xsa`) instead of `ps7_init.tcl` as initialization script, and failed with `invalid command name "ps7_init"`. I fixed it by putting the content of `ps7_init.tcl` in that file.
