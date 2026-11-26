@@ -3,14 +3,16 @@
  * Vitis "Hello World" application: this file replaces helloworld.c.
  *
  * F32 by default. Uncomment USE_Q7 to run the quantized model.
+ * Uncomment USE_HW_MUL (F32 only) to do the multiplications of the dense layers in the PL (mul_ip).
  */
 //#define USE_Q7
+#define USE_HW_MUL
 
 #include <stdio.h>
 #include <stdint.h>
 #include "platform.h"
 #include "xil_printf.h"
-#include "xiltimer.h"       // XTime_GetTime / COUNTS_PER_SECOND (A9 global timer)
+#include "xiltimer.h"        // XTime_GetTime / COUNTS_PER_SECOND (A9 global timer)
 
 #include "aifes.h"
 
@@ -31,6 +33,12 @@ void aiprint_uint(const char *format, unsigned int v)  { printf(format, v); }
   #define FMT_NAME "F32"
 #endif
 
+#ifdef USE_HW_MUL
+// in aifes_hw.c
+float mul_hw(float a, float b);
+void linear_hw(const aitensor_t *a, const aitensor_t *b, const aitensor_t *c, aitensor_t *result);
+#endif
+
 #include "test_data.h"      // N_TEST, test_images, test_labels, keras_pred
 
 static int argmax(const float *v, int n)
@@ -43,7 +51,14 @@ static int argmax(const float *v, int n)
 int main(void)
 {
     init_platform();
+
+#ifdef USE_HW_MUL
+    printf("\r\n=== AIfES MNIST " FMT_NAME " on Zynq (multiplications in the PL) ===\r\n");
+    int n = 10;             // much slower, so only 10 images
+#else
     printf("\r\n=== AIfES MNIST " FMT_NAME " on Zynq ===\r\n");
+    int n = N_TEST;
+#endif
 
     uint8_t error = CREATE_MODEL();
     if (error != 0) {
@@ -51,12 +66,23 @@ int main(void)
         return error;
     }
 
+#ifdef USE_HW_MUL
+    printf("IP test: 1.5 * 2 = %f\r\n", mul_hw(1.5f, 2.0f));
+
+    // the dense layers use linear_hw() instead of the AIfES default function
+    dense_layer_1.linear = linear_hw;
+    dense_layer_2.linear = linear_hw;
+    dense_layer_3.linear = linear_hw;
+    dense_layer_4.linear = linear_hw;
+    dense_layer_5.linear = linear_hw;
+#endif
+
     float output_data[10];
     int correct = 0, same_as_keras = 0;
     XTime t0, t1;
     uint64_t total_ticks = 0;
 
-    for (int i = 0; i < N_TEST; i++) {
+    for (int i = 0; i < n; i++) {
         XTime_GetTime(&t0);
         INFERENCE((float *)test_images[i], output_data);
         XTime_GetTime(&t1);
@@ -73,9 +99,9 @@ int main(void)
         }
     }
 
-    double us = (double)total_ticks * 1e6 / COUNTS_PER_SECOND / N_TEST;
-    printf("\r\nAccuracy (vs labels)     : %d / %d\r\n", correct, N_TEST);
-    printf("Agreement with Keras     : %d / %d\r\n", same_as_keras, N_TEST);
+    double us = (double)total_ticks * 1e6 / COUNTS_PER_SECOND / n;
+    printf("\r\nAccuracy (vs labels)     : %d / %d\r\n", correct, n);
+    printf("Agreement with Keras     : %d / %d\r\n", same_as_keras, n);
     printf("Mean time per inference  : %.1f us\r\n", us);
 
     cleanup_platform();
