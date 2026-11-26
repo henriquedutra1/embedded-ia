@@ -91,8 +91,6 @@ In the block design I enabled M_AXI_GP0 again and added `mul_ip`. The connection
   <img src="vivado/final_design.png" alt="Block design with mul_ip" width="700">
 </p>
 
-When running from Vitis, the launch used `mul_ip.tcl` (a file of the IP driver included in the `.xsa`) instead of `ps7_init.tcl` as initialization script, and failed with `invalid command name "ps7_init"`. I fixed it by putting the content of `ps7_init.tcl` in that file.
-
 ### Software
 
 In AIfES, each dense layer has a pointer `linear` to the function that computes Y = X·W + b. `vitis/aifes_hw.c` has a copy of this function where each multiplication is done by the IP (`mul_hw()`: write A, write B, read the result with `Xil_Out32` / `Xil_In32`). After creating the model, `main.c` points the five dense layers to this function, so the AIfES library itself is not modified. This is enabled with `#define USE_HW_MUL` and only works with the F32 model.
@@ -107,8 +105,6 @@ The board first checks the IP with 1.5 × 2 and gets 3.0. Then it runs the netwo
 | Inference time | 7.89 ms | 96.4 ms |
 
 The network still gives the same answers as Keras, so the truncation in the multiplier doesn't change the predictions. But it is about 12 times slower. The multiplier itself only needs one 10 ns cycle; the problem is the communication. For each of the 575,050 multiplications the ARM does two writes and one read through the GP0 port and the SmartConnect, which comes to about 168 ns per multiplication, while the FPU does the multiplication, the addition and the loop in about 14 ns.
-
-So moving one small operation to the PL doesn't pay off: the bus costs much more than the computation. To get faster than the ARM, the IP would need to do more work per transfer, for example a multiply-accumulate that computes a whole dot product and is read once per neuron, or a DMA/AXI-Stream interface with several multipliers working in parallel.
 
 ## Repository content
 
