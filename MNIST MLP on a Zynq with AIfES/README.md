@@ -61,8 +61,6 @@ The Q7 model uses about 4 times less memory, both for the weights and for the in
 
 Everything above runs in software on the ARM core. The next part moves the multiplications to the programmable logic.
 
-A small thing left to do: the generated code allocates the inference memory with `malloc`. AIfES prints the size it needs at startup (6,272 B for F32 and 1,588 B for Q7), so it could be replaced by a static array of that size.
-
 ## Float multiplier in the PL
 
 The last step of the assignment was to make my own IP in the programmable logic and use it from AIfES. I made a float32 multiplier connected to the ARM through AXI4-Lite.
