@@ -6,6 +6,6 @@ My work for the Embedded AI course at MINES Saint-Étienne: neural networks trai
 |---|---|---|---|---|
 | [MNIST on an STM32L4R9 with X-CUBE-AI](MNIST%20on%20an%20STM32L4R9%20with%20X-CUBE-AI) | Tiny CNN, 6,478 parameters | 8.1 KB | 95.77 % | 99/100 |
 | [MNIST MLP on an STM32L4R9 with X-CUBE-AI](MNIST%20MLP%20on%20an%20STM32L4R9%20with%20X-CUBE-AI) | 5-layer MLP, 575,050 parameters (8-bit weight compression) | 593 KiB | 97.75 % | 100/100 |
-| [MNIST MLP on a Zynq with AIfES](MNIST%20MLP%20on%20a%20Zynq%20with%20AIfES) | Same MLP, AIfES F32 and Q7 | 2.19 MiB (F32) / 564 KiB (Q7) | 97.75 % | 99/100 (F32 and Q7) |
+| [MNIST MLP on a Zynq with AIfES](MNIST%20MLP%20on%20a%20Zynq%20with%20AIfES) | Same MLP, AIfES F32 and Q7, plus a float multiplier IP in the PL | 2.19 MiB (F32) / 564 KiB (Q7) | 97.75 % | 99/100 (F32 and Q7) |
 
 Each folder has its own README with the training, the conversion, the embedded code and the results.
