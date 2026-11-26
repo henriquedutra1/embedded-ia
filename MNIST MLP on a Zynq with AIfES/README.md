@@ -59,9 +59,6 @@ Both versions give the same answer as Keras on every image, including the one Ke
 
 The Q7 model uses about 4 times less memory, both for the weights and for the inference buffers, which is what you expect going from 4 bytes to 1 byte per value. The speed gain is bigger than that: Q7 is 6.3 times faster (about 794 images per second against 127). My guess is that memory access is the main reason. The F32 weights (2.19 MiB) are much bigger than the 512 KB L2 cache of the Zynq, so they are read again from DDR at every inference, while the Q7 weights almost fit. Integer multiply-accumulate is also cheaper than float on the A9. I didn't test the two effects separately.
 
-Everything here runs in software on one ARM core and the programmable logic is not used at all. Moving the dense layers to the PL would be the next step to make it faster.
-
-A small thing left to do: the generated code allocates the inference memory with `malloc`. AIfES prints the size it needs at startup (6,272 B for F32 and 1,588 B for Q7), so it could be replaced by a static array of that size.
 
 ## Repository content
 
